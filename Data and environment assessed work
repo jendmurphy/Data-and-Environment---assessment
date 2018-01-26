@@ -13,6 +13,22 @@ import matplotlib
 import statsmodels.formula.api as sm
 import seaborn as sns
 
+sns.set_style("white")
+sns.despine()
+
+# Store important holiday dates
+superbowl = ['12/02/2010','11/02/2011','10/02/2012','08/02/2013']
+superbowl = pd.to_datetime(superbowl, dayfirst = True)
+
+laborday = ['10/09/2010','09/09/2011','07/09/2012','06/09/2013']
+laborday = pd.to_datetime(laborday, dayfirst = True)
+
+thanksgiving = ['26/11/2010','25/11/2011','23/11/2012','29/11/2013']
+thanksgiving = pd.to_datetime(thanksgiving, dayfirst = True)
+
+christmas = ['31/12/2010','30/12/2011','28/12/2012','27/12/2013']
+christmas = pd.to_datetime(christmas, dayfirst = True)
+
 #  Read in data - attempt to force European parsing of dates
 stores = pd.read_csv('stores.csv', dayfirst=True)
 train = pd.read_csv('train.csv', dayfirst=True)
@@ -48,7 +64,6 @@ m.trendplot(Dept1, 'Store', 'Newdate', 'Weekly_Sales', 'Date', 'Sales', 'Sales f
 #  Plot of all departments, store 1, sales data by date
 m.trendplot(Store1, 'Dept', 'Newdate', 'Weekly_Sales', 'Date', 'Sales', 'Sales for store 1 by dept', 'store1sales.pdf')
 
-
 #  Checking that the merge has correctly worked
 storelist = [1,2,10]
 deptlist = [1,2]
@@ -75,21 +90,12 @@ print(model.summary())
 #  Correlation
 corr = merge.corr()
 
-sns.set()
-
-#  Set up figure in matplotlib
-#f, ax = plt.subplots(figsize = (11,9))
-
-# Custom diverging colourmap
-#cmap = sns.diverging_palette(220,10, as_cmap=True)
-
-#sns.heatmap(corr, cmap = cmap, vmax = .3, centre = 0, square = True, linewidths = .5, cbar_kws={"shrink":.5})
-
-
-
 plot = sns.heatmap(corr, 
         xticklabels=corr.columns.values,
         yticklabels=corr.columns.values)
+plt.show()
+
+
 
 '''
 import matplotlib.pyplot as plt
