@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jan 24 21:00:05 2018
+
+@author: JenMurphy
+"""
+import pandas as pd
+import Methods as m
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib
+import statsmodels.formula.api as sm
+import seaborn as sns
+
+#  Read in data - attempt to force European parsing of dates
+stores = pd.read_csv('stores.csv', dayfirst=True)
+train = pd.read_csv('train.csv', dayfirst=True)
+test = pd.read_csv('test.csv', dayfirst=True)
+features = pd.read_csv('features.csv', dayfirst=True)
+
+#  Linking of training data
+features_stores = pd.merge(features, stores, how = 'left')
+merge = pd.merge(train, features_stores, how = 'left')
+
+# Truncated datasets for ease of working
+Dept1 = merge.loc[merge['Dept']==1]
+Store1Dept1 = Dept1.loc[Dept1['Store']==1]
+Store1 = merge.loc[merge['Store']==1]
+
+# Check head of data sets
+pd.DataFrame.head(train)
+pd.DataFrame.head(features_stores)
+pd.DataFrame.head(merge)
+
+#Create new date variable to format to datetime rather than str
+Store1Dept1['Newdate']=pd.to_datetime(Store1Dept1['Date'], dayfirst = True)
+Dept1['Newdate']=pd.to_datetime(Dept1['Date'], dayfirst = True)
+Store1['Newdate']=pd.to_datetime(Store1['Date'], dayfirst = True)
+
+# Plot of store1dept1 sales data by date
+plt.plot_date(Store1Dept1['Newdate'],Store1Dept1['Weekly_Sales'], fmt = ('g-'))
+plt.show()
+
+#  Plot of all stores, dept1 sales data by date
+m.trendplot(Dept1, 'Store', 'Newdate', 'Weekly_Sales', 'Date', 'Sales', 'Sales for dept 1 by store', 'dept1sales.pdf')
+
+#  Plot of all departments, store 1, sales data by date
+m.trendplot(Store1, 'Dept', 'Newdate', 'Weekly_Sales', 'Date', 'Sales', 'Sales for store 1 by dept', 'store1sales.pdf')
+
+
+#  Checking that the merge has correctly worked
+storelist = [1,2,10]
+deptlist = [1,2]
+datelist = ['12/02/2010','23/04/2010']
+checkframe = merge.loc[merge['Store'].isin(storelist)]
+checkframe = checkframe.loc[checkframe['Dept'].isin(deptlist)]
+checkframe = checkframe.loc[checkframe['Date'].isin(datelist)]
+checkframe1 = features_stores.loc[features_stores['Store'].isin(storelist)]
+checkframe1 = checkframe1.loc[checkframe1['Date'].isin(datelist)]
+
+#Column header list
+print(merge.columns.tolist())
+
+
+#Run a regression model
+from statsmodels.formula.api import ols
+
+model = ols("Weekly_Sales ~ Temperature + Fuel_Price + IsHoliday", merge).fit()
+print(model.summary())
+
+
+
+#  Try to get some correlation heat maps.
+#  Correlation
+corr = merge.corr()
+
+sns.set()
+
+#  Set up figure in matplotlib
+#f, ax = plt.subplots(figsize = (11,9))
+
+# Custom diverging colourmap
+#cmap = sns.diverging_palette(220,10, as_cmap=True)
+
+#sns.heatmap(corr, cmap = cmap, vmax = .3, centre = 0, square = True, linewidths = .5, cbar_kws={"shrink":.5})
+
+
+
+plot = sns.heatmap(corr, 
+        xticklabels=corr.columns.values,
+        yticklabels=corr.columns.values)
+
+'''
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4], [1,4,9,16], 'ro')
+plt.axis([0, 6, 0, 20])
+plt.show()
+
+dates = matplotlib.dates.date2num(list_of_datetimes)
+matplotlib.pyplot.plot_date(dates, values)
+
+
+plt.plot(Store1Dept1,
+         
+         )
+
+m.trendplot(Store1Dept1,'Store','Newdate','Weekly_Sales', 'Date','Sales','Sales trends for dept 1 across all stores', 'Dept1trend.pdf')
+
+
+
+
+merge.corr() #correlation matrix
+merge.cov() #covariance matrix
+
+
+
+pivot = merge.pivot(index = 'Store', columns = 'Date')
+
+
+#smoker = childhealthprofiledata.loc[childhealthprofiledata['Indicator ID']== 20301]
+
+# Descriptive statistics need to be grouped?  Pretty meaningless as is.
+#features_stores.describe()
+
+m.trendplot(Dept1,'Store','Date','Weekly_Sales', 'Date','Sales','Sales trends for dept 1 across all stores', 'Dept1trend.pdf')
+
+
+
+def trendplot(data,group1,xvar,yvar,xlab,ylab,plottitle,fname):
+    # Plotting the trend in maternal smoker rates across differnt boroughs
+    fig, ax = plt.subplots()
+    for title, group in data.groupby(group1):
+        ax.plot(group[xvar], group[yvar], label = title)
+    
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title(plottitle)
+    plt.legend(loc=1)
+    plt.savefig(fname)
+    
+trendplot(gmsmokerlbwconcat,gmsmokerlbwconcat.index,'Time period','Smokervalue','Year',
+          '% of maternal smokers','Trend in maternal smoker rates',
+          'Trend in maternal smoker rates.pdf')
+'''
