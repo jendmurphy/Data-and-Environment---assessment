@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Jan 27 12:03:06 2018
+
+('/Users/JenMurphy/Documents/UNIVERSITY/Github/Data-and-Environment---assessment/Messing', wdir='/Users/JenMurphy/Documents/UNIVERSITY/Github/Data-and-Environment---assessment')
+
+@author: JenMurphy
+"""
+import pandas as pd
+
+#  Read in data - attempt to force European parsing of dates
+stores = pd.read_csv('stores.csv', dayfirst=True)
+train = pd.read_csv('train.csv', dayfirst=True)
+test = pd.read_csv('test.csv', dayfirst=True)
+features = pd.read_csv('features.csv', dayfirst=True)
+
+#  Linking of training data
+features_stores = pd.merge(features, stores, how = 'left')
+merge = pd.merge(train, features_stores, how = 'left')
+
+# create a new variable for a standardised datetime.
+# THIS LINE TAKES AGES TO RUN
+merge['Newdate']=pd.to_datetime(merge['Date'], dayfirst = True)
+
+#  output to .csv file
+merge.to_csv('merge.csv')

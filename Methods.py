@@ -10,6 +10,9 @@ Visualisation methods for GEOG5995 script
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+sns.set_style("white")
+sns.despine()
+
 def scatterplot(x,y,data,hue,size,scattertitle,fname2):    
     #  Plot using Seaborn package, save figure as a pdf.
     sns.pairplot(x_vars=[x], y_vars=[y], data = data, hue=hue, size=size)
@@ -24,6 +27,8 @@ def trendplot(data,group1,xvar,yvar,xlab,ylab,plottitle,fname):
     
     plt.xlabel(xlab)
     plt.ylabel(ylab)
+    plt.yticks(rotation=0, fontsize = 12) 
+    plt.xticks(rotation = 90, fontsize = 12)
     plt.title(plottitle)
     plt.legend(loc=1)
     plt.savefig(fname)
