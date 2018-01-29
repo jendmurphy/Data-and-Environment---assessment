@@ -25,3 +25,33 @@ merge['Newdate']=pd.to_datetime(merge['Date'], dayfirst = True)
 
 #  output to .csv file
 merge.to_csv('merge.csv')
+
+#  create a hierarchical index, separate Store, Dept and date
+merge.set_index(['Store','Dept','Date'], inplace = True)
+merge.sort_index(inplace=True)
+
+# To reset the index and restore the columns
+merge = merge.reset_index()
+
+merge.index
+
+df = merge.groupby('Store','Dept').mean()
+
+merge['year'] = merge.Newdate.dt.year
+
+For year in year
+    for dept in dept
+        for store in Store,
+            
+# Truncated datasets for ease of working
+
+#name that I want for each dataframe
+namelist = []
+
+
+for x in range (0,99):
+    dept[x] = merge.loc[merge['Dept']== x]
+
+
+Store1Dept1 = Dept1.loc[Dept1['Store']==1]
+Store1 = merge.loc[merge['Store']==1]
