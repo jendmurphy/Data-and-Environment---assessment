@@ -6,7 +6,7 @@ Created on Wed Jan 24 21:00:05 2018
 @author: JenMurphy
 """
 import pandas as pd
-import Methods as m
+#import Methods as m
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
@@ -43,6 +43,10 @@ merge = pd.merge(train, features_stores, how = 'left')
 Dept1 = merge.loc[merge['Dept']==1]
 Store1Dept1 = Dept1.loc[Dept1['Store']==1]
 Store1 = merge.loc[merge['Store']==1]
+
+# Truncated datasets for ease of working
+Dept4 = merge.loc[merge['Dept']==4]
+Store1Dept4 = Dept4.loc[Dept1['Store']==1]
 
 # Check head of data sets
 pd.DataFrame.head(train)

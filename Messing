@@ -30,6 +30,43 @@ merge.to_csv('merge.csv')
 merge.set_index(['Store','Dept','Date'], inplace = True)
 merge.sort_index(inplace=True)
 
+# set the hierarchical index
+mergeindex = merge.set_index(['Newdate', 'Store', 'Dept'], append=True)
+
+
+merge['Storestring'] = str(merge['Store'])
+merge['Deptstring'] = str(merge['Dept'])
+
+merge['StoreDept'] = "S"+ merge['Storestring']+ "D" +merge['Deptstring']
+
+type(merge['Store'])
+
+
+
+pivotmerge = merge.pivot('NewDate','Store','Dept','Weekly_Sales')
+
+
+
+
+
+#  Does this work?  I dont think so.
+groupmerge = merge.groupby(['Store', 'Dept', 'Newdate'])['Weekly_Sales'].sum().unstack('Newdate')
+groupmergetranspose = groupmerge.transpose()
+
+pd.pivot_table(merge,index=merge['Newdate'], columns = (merge['Store'],['Dept']), values = merge['Weekly_Sales'])
+
+
+trymerge = merge.pivot(index='Newdate', columns='Store', values='Weekly_Sales')
+
+#  I want a Df for every department.
+for x in range (0,100):
+        deptx = merge.loc[merge['Dept']==[x]]
+
+# Pull together descriptive statistics for the variables
+merge.describe()
+
+
+'''
 # To reset the index and restore the columns
 merge = merge.reset_index()
 
@@ -38,6 +75,7 @@ merge.index
 df = merge.groupby('Store','Dept').mean()
 
 merge['year'] = merge.Newdate.dt.year
+
 
 For year in year
     for dept in dept
